@@ -1,0 +1,85 @@
+# 🔬 Goldbach Lab Suite (GHN-Lab)
+
+![Python Version](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)
+![C++ Version](https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B&logoColor=white)
+![Framework](https://img.shields.io/badge/UI-Streamlit-FF4B4B?logo=streamlit&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green)
+
+Install the required Python packages:
+
+```bash
+pip install -r requirements.txt
+An interactive numerical laboratory designed to visualize the Goldbach Conjecture and analyze prime pair distributions through the Reduced Sum Set Test (RSST) framework.
+
+🚀 Live Demo (Python): Access Goldbach Lab (https://huggingface.co/spaces/vpozza/goldbach-lab)
+🏎️ High-Performance Core: C++ version available in the /cpp_engine directory.
+
+🌟 Overview
+
+The GHN-Lab provides high-performance numerical engines to explore the probabilistic abundance of Goldbach partitions G(n). This lab focuses on the Scarcity Paradox: the observation that while the relative density of partitions (G(n)/n) decays logarithmically, the absolute count diverges, creating a "safety margin" that prevents counter-examples at scale.
+
+🚀 Dual-Engine Architecture
+
+The repository now provides two distinct implementations of the RSST framework:
+
+1. Python (Visual Analytics)
+   * Interface: Built with Streamlit.
+   * Visuals: Dynamic "Goldbach's Comet" scatter plots using Plotly and Magma scales.
+   * Focus: Heuristic exploration, interactive parameter adjustment, and data export for research.
+
+2. C++ (High-Performance Engine)
+   * Performance: Optimized C++17 implementation for massive computational throughput.
+   * Algorithm: Memory-efficient Sieve of Eratosthenes to process N > 10^8 without Python overhead.
+   * Focus: Large-scale stress testing of the RSST framework and validating lower-bound envelopes.
+
+🧪 Methodology & The RSST Framework
+
+The lab implements the Reduced Sum Set Test (RSST). This methodology analyzes the gap between the lowest observed partition count and the null threshold.
+
+Core Arguments:
+1. Probabilistic Abundance: Visualization of why a "Goldbach Hole" becomes statistically impossible as n increases.
+2. Density Stabilization: While the Relative Density (Scarcity Metric: D(n) = G(n)/n) decreases, it maintains a strictly positive lower envelope.
+3. Numerical Rigor: Serves as empirical evidence supporting the heuristic expectation.
+
+🛠️ Installation & Setup
+
+Prerequisites
+* Python 3.10 or higher.
+* C++ Compiler (GCC, Clang, or MSVC) with C++17 support.
+
+Running the C++ Engine
+1. Navigate to the engine directory:
+   cd cpp_engine
+2. Compile the source (Optimization flag -O3 recommended):
+   g++ -O3 -std=c++17 rsst_engine.cpp -o rsst_engine
+3. Run the analysis:
+   ./rsst_engine [limit]
+
+Running the Python Laboratory
+1. Install dependencies:
+   pip install streamlit numpy pandas plotly
+2. Run the application:
+   streamlit run app.py
+
+📊 Numerical Interpretation
+
+When running the GHN-Lab, the following insights are generated:
+- Empirical Robustness: Real-time tracking of the minimum number of partitions found in the sampled range.
+- Trend Correlation: Demonstrating that the absolute count (Comet) diverges positively while the relative density (Curve) remains bounded away from zero.
+
+This repository contains the code and data used in the paper "On the Goldbach Singular Series and Mean-Square Stability" by Vitor M. Pozza.
+
+## Contents
+
+- `data/` – Input data files:
+  - `goldbach_full.csv` – Pointwise values of n, G(n) and singular series S(n) for even $4 \leq n \leq 10^7$.
+  - `zeta_zeros_100000.txt` – First 100,000 imaginary parts of non‑trivial zeros of ζ(s) (from Odlyzko).
+  - `R_subintervals.csv` – Pointwise values 30 subintervals.
+- `src/` – Python modules for loading data, computing statistics, fitting models, and plotting.
+- `analyze_goldbach.py` – Main script that reproduces all tables and figures from the paper.
+- `output/` – Generated tables (CSV) and figures (PDF) (created when running the script).
+
+Author: Vitor M. Pozza
+Research: Number Theory & Computational Heuristics
+Status: Heuristic Evidence for Mathematics Research
+Contact: pozza.data.analyst@outlook.com
