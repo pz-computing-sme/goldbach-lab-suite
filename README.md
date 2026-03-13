@@ -12,7 +12,7 @@ pip install -r requirements.txt
 An interactive numerical laboratory designed to visualize the Goldbach Conjecture and analyze prime pair distributions through the Reduced Sum Set Test (RSST) framework.
 
 🚀 Live Demo (Python): Access Goldbach Lab (https://huggingface.co/spaces/vpozza/goldbach-lab)
-🏎️ High-Performance Core: C++ version available in the /cpp_engine directory.
+🏎️ High-Performance Core: C++ version available in the /rsst_paper directory.
 
 🌟 Overview
 
