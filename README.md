@@ -1,9 +1,9 @@
-🔬 Goldbach Lab Suite (GHN-Lab)
+# 🔬 Goldbach Lab Suite (GHN-Lab)
 
-[Python 3.10+]
-[C++ 17]
-[Streamlit App]
-[License: MIT]
+![Python Version](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)
+![C++ Version](https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B&logoColor=white)
+![Framework](https://img.shields.io/badge/UI-Streamlit-FF4B4B?logo=streamlit&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Requirements
 
@@ -18,7 +18,7 @@ An interactive numerical laboratory designed to visualize the Goldbach Conjectur
 
 🌟 Overview
 
-The GHN-Lab provides high-performance numerical engines to explore the probabilistic abundance of Goldbach partitions G(n). This lab focuses on the Pozza Scarcity Paradox: the observation that while the relative density of partitions (G(n)/n) decays logarithmically, the absolute count diverges, creating a "safety margin" that prevents counter-examples at scale.
+The GHN-Lab provides high-performance numerical engines to explore the probabilistic abundance of Goldbach partitions G(n). This lab focuses on the Scarcity Paradox: the observation that while the relative density of partitions (G(n)/n) decays logarithmically, the absolute count diverges, creating a "safety margin" that prevents counter-examples at scale.
 
 🚀 Dual-Engine Architecture
 
@@ -41,7 +41,7 @@ The lab implements the Reduced Sum Set Test (RSST). This methodology analyzes th
 Core Arguments:
 1. Probabilistic Abundance: Visualization of why a "Goldbach Hole" becomes statistically impossible as n increases.
 2. Density Stabilization: While the Relative Density (Scarcity Metric: D(n) = G(n)/n) decreases, it maintains a strictly positive lower envelope.
-3. Numerical Rigor: Serves as empirical evidence supporting the transition from heuristic expectation to deterministic certainty.
+3. Numerical Rigor: Serves as empirical evidence supporting the heuristic expectation.
 
 🛠️ Installation & Setup
 
@@ -74,7 +74,7 @@ This repository contains the code and data used in the paper "On the Goldbach Si
 ## Contents
 
 - `data/` – Input data files:
-  - `goldbach_full.csv` – Pointwise values of n, G(n) and singular series S(n) for even n ≤ 1e7.
+  - `goldbach_full.csv` – Pointwise values of n, G(n) and singular series S(n) for even $4 \leq n \leq 10^7$.
   - `zeta_zeros_100000.txt` – First 100,000 imaginary parts of non‑trivial zeros of ζ(s) (from Odlyzko).
   - `R_subintervals.csv` – Pointwise values 30 subintervals.
 - `src/` – Python modules for loading data, computing statistics, fitting models, and plotting.
