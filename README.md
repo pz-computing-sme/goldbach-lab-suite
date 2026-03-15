@@ -1,3 +1,14 @@
+---
+title: Goldbach Lab Suite
+emoji: 🔢
+colorFrom: blue
+colorTo: indigo
+sdk: streamlit
+app_file: live_demo.py
+pinned: false
+---
+
+
 # 🔬 Goldbach Lab Suite (GHN-Lab)
 
 ![Python Version](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)
