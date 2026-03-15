@@ -10,7 +10,6 @@ import pandas as pd
 from src import data_loader, stats, fits, plotting
 
 def main():
-    # -------------------- Configuration --------------------
     base_dir = os.path.dirname(__file__)
     data_dir = os.path.join(base_dir, 'data')
     out_dir = os.path.join(base_dir, 'output')
@@ -34,9 +33,8 @@ def main():
 
     # -------------------- Singular series moments (Table 3) --------------------
     print("Computing singular series moments (Table 3)...")
-    # Use only even n
     df_even = df_goldbach[df_goldbach['n'] % 2 == 0].copy()
-    limits = [1e4, 1e5, 1e6, 1e7]   # 10^8 not available in CSV
+    limits = [1e4, 1e5, 1e6, 1e7]
     ss_moments = stats.singular_series_moments(df_even, limits)
     pd.DataFrame(ss_moments).to_csv(
         os.path.join(tables_dir, 'table3.csv'), index=False
@@ -57,46 +55,46 @@ def main():
     # -------------------- Figures --------------------
     print("Generating figures...")
 
-    # Figure 1: Global fit – uses data from Table 1
+    # Figure 1: 3D histogram (original Figure 6)
+    plotting.figure_6_hist3d(
+        df_goldbach,
+        os.path.join(figures_dir, 'figure_1.pdf')
+    )
+
+    # Figure 2: Global fit (original Figure 1)
     L_vals = [1e4, 1e5, 1e6, 1e7, 1e8]
     R_vals = [0.7225, 0.6725, 0.6382, 0.6145, 0.5975]
     plotting.figure_1_global_fit(
         L_vals,
         R_vals,
-        os.path.join(figures_dir, 'figure_1.pdf')
-    )
-
-    # Figure 2: Local fit (30 subintervals)
-    plotting.figure_2_local_fit(
-        df_sub_30,
         os.path.join(figures_dir, 'figure_2.pdf')
     )
 
-    # Figure 3: Fit with zero term
-    plotting.figure_3_zeros_fit(
+    # Figure 3: Local fit (original Figure 2)
+    plotting.figure_2_local_fit(
         df_sub_30,
-        zeros,
         os.path.join(figures_dir, 'figure_3.pdf')
     )
 
-    # Figure 4: Autocorrelation (500 subintervals)
+    # Figure 4: Fit with zero term (original Figure 3)
+    plotting.figure_3_zeros_fit(
+        df_sub_30,
+        zeros,
+        os.path.join(figures_dir, 'figure_4.pdf')
+    )
+
+    # Figure 5: Autocorrelation (original Figure 4)
     print("Computing 500 subintervals for residual analysis...")
     df_sub_500 = stats.compute_subintervals(df_goldbach, n_intervals=500)
     resid_500 = fits.log_fit_local_residuals(df_sub_500)
     plotting.figure_4_autocorr(
         resid_500,
-        os.path.join(figures_dir, 'figure_4.pdf')
-    )
-
-    # Figure 5: Q(L) plot
-    plotting.figure_5_Q_plot(
-        tilde_stats,
         os.path.join(figures_dir, 'figure_5.pdf')
     )
 
-    # Figure 6: 3D histogram
-    plotting.figure_6_hist3d(
-        df_goldbach,
+    # Figure 6: Q(L) plot (original Figure 5)
+    plotting.figure_5_Q_plot(
+        tilde_stats,
         os.path.join(figures_dir, 'figure_6.pdf')
     )
 
