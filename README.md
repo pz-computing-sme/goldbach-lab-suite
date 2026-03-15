@@ -95,7 +95,7 @@ This repository contains the code and data used in the paper "On the Goldbach Si
   - `figures/`: Main figures (Figure 1 to Figure 6) in PDF format.
 
 ```
-`Author: Vitor M. Pozza
-`Research: Number Theory & Computational Heuristics
-`Status: Heuristic Evidence for Mathematics Research
-`Contact: pozza.data.analyst@outlook.com
+*Author: Vitor M. Pozza
+*Research: Number Theory & Computational Heuristics
+*Status: Heuristic Evidence for Mathematics Research
+*Contact: pozza.data.analyst@outlook.com
