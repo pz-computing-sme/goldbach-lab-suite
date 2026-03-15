@@ -120,7 +120,7 @@ def compute_cumulative_stats(df, max_val):
             'Max G(n)': int(max_g),
             'Mean G(n)': round(mean_g, 2),
             'Mean Density (G(n)/n)': round(mean_density, 6),
-            'Cp (from mean)': round(cp_mean, 4)
+            'C (from mean)': round(c_mean, 4)
         })
     return pd.DataFrame(stats)
 
@@ -143,7 +143,7 @@ with st.expander("📝 METHODOLOGY & HEURISTIC ARGUMENT"):
     ### 1. Research Objective
     This laboratory explores the **probabilistic abundance** of Goldbach partitions $G(n)$. It provides high‑quality numerical evidence supporting the asymptotic behavior of prime sums.
     
-    ### 2. The Pozza Scarcity Paradox
+    ### 2. The Scarcity Paradox
     The fundamental observation identifies that while the **Relative Density** $D(n) = G(n)/n$ decays logarithmically, the absolute count of partitions diverges. The RSST framework analyzes the safety margin between the lowest partition count and zero.
     
     ### 3. Expectations vs. Deterministic Certainty
@@ -178,8 +178,8 @@ if run_btn:
 
     st.divider()
 
-    # --- PLOT 2: POZZA SCARCITY ---
-    st.header("📉 2. Pozza's Relative Partition Density")
+    # --- PLOT 2: SCARCITY ---
+    st.header("📉 2. Relative Partition Density")
     st.markdown("The **Relative Scarcity Curve**: This graph represents $G(n)/n$.")
     fig_density = px.line(df, x="n", y="density",
                           color_discrete_sequence=["#00FF88"],
@@ -197,7 +197,7 @@ if run_btn:
     \max G(L) &= \max_{4 \le n \le L} G(n) \\
     \overline{G}(L) &= \frac{1}{\text{Num Evens}} \sum_{4 \le n \le L} G(n) \\
     \overline{D}(L) &= \frac{1}{\text{Num Evens}} \sum_{4 \le n \le L} \frac{G(n)}{n} \\
-    C_P(L) &= \frac{\overline{G}(L)}{L / \ln^2 L}
+    C(L) &= \frac{\overline{G}(L)}{L / \ln^2 L}
     \end{aligned}
     """)
 
@@ -205,7 +205,7 @@ if run_btn:
     if not stats_df.empty:
         st.dataframe(stats_df, use_container_width=True)
         last_row = stats_df.iloc[-1]
-        st.info(f"**Pozza Constant estimate (from mean):** {last_row['Cp (from mean)']} "
+        st.info(f"**Constant estimate (from mean):** {last_row['C (from mean)']} "
                 f"for interval {last_row['Interval']}")
     else:
         st.warning("Not enough data to compute interval statistics.")
@@ -218,7 +218,7 @@ if run_btn:
     """)
     st.markdown(f"""
     1. **Empirical Robustness:** Within the range of **{max_val:,}**, the minimum number of prime partitions found was **{int(df['partitions'].min()):,}**.
-    2. **Trend Correlation:** The absolute count (Comet) diverges positively, while the relative density (Pozza Curve) stabilizes, suggesting the absence of Goldbach holes in the tested limits.
+    2. **Trend Correlation:** The absolute count (Comet) diverges positively, while the relative density (Curve) stabilizes, suggesting the absence of Goldbach holes in the tested limits.
     """)
 
     csv = df.to_csv(index=False).encode('utf-8')
