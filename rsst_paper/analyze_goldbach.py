@@ -57,13 +57,12 @@ def main():
     # -------------------- Figures --------------------
     print("Generating figures...")
 
-    # Figure 1: Global fit – uses data from Table 1 (already published)
-    # We'll load the values from the article manually (or from a small CSV)
-    # For reproducibility, we include a tiny CSV with the five points.
-    global_points = pd.read_csv(os.path.join(data_dir, 'global_R_points.csv'))
+    # Figure 1: Global fit – uses data from Table 1
+    L_vals = [1e4, 1e5, 1e6, 1e7, 1e8]
+    R_vals = [0.7225, 0.6725, 0.6382, 0.6145, 0.5975]
     plotting.figure_1_global_fit(
-        global_points['L'].values,
-        global_points['R'].values,
+        L_vals,
+        R_vals,
         os.path.join(figures_dir, 'figure_1.pdf')
     )
 

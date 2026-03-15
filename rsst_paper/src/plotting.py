@@ -11,14 +11,12 @@ from . import fits
 # Set global matplotlib style (optional)
 plt.rcParams['font.size'] = 12
 
-def figure_1_global_fit(global_stats, output_path):
+def figure_1_global_fit(L_vals, R_vals, output_path):
     """
     Figure 1: Global R(L) vs 1/log L with linear fit.
-    global_stats is list of dicts from stats.global_statistics.
+    L_vals: list of L values (e.g., [1e4, 1e5, 1e6, 1e7, 1e8])
+    R_vals: list of corresponding R(L) values
     """
-    L_vals = [d['L'] for d in global_stats]
-    R_vals = [d['R'] for d in global_stats]
-
     x = 1.0 / np.log(L_vals)
     y = R_vals
 
@@ -200,7 +198,7 @@ def figure_6_hist3d(df, output_path):
     ax.bar3d(xpos, ypos, zpos, dx, dy, dz, shade=True, cmap='viridis')
     ax.set_xlabel('$n$ (millions)')
     ax.set_ylabel('$G(n)$')
-    ax.set_zlabel('Average $\mathfrak{S}(n)$')
+    ax.set_zlabel(r'Average $\mathfrak{S}(n)$')
     ax.set_title('3D histogram: average singular series vs $n$ and $G(n)$')
     plt.tight_layout()
     plt.savefig(output_path)
