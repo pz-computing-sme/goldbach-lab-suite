@@ -9,7 +9,7 @@ def log_fit(x, y):
     slope, intercept, r_value, p_value, std_err = spstats.linregress(t, y)
     R2 = r_value**2
     residuals = y - (intercept + slope * t)
-    return intercept, slope, R2, p_value, np.asarray(residuals)
+    return intercept, slope, R2, p_value, residuals
 
 def zero_term(L, zeros):
     total = 0.0
@@ -44,7 +44,7 @@ def fit_with_zeros(df_sub, zeros):
     F = ((RSS_red - RSS) / df_num) / (RSS / df_den)
     p_value_F = 1 - spstats.f.cdf(F, df_num, df_den)
 
-    return a, b, c, R2, resid, F, p_value_F
+    return a, b, c, R2, resid, F, p_value_F, fitted
 
 def log_fit_local_residuals(df_sub):
     Lk = df_sub['interval_right'].values

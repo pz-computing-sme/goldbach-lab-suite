@@ -7,7 +7,7 @@ using the pointwise dataset up to 10^7.
 
 import os
 import pandas as pd
-from src import data_loader, stats, fits, plotting
+from src import data_loader, stats, fits, plotting   # <--- absoluto
 
 def main():
     base_dir = os.path.dirname(__file__)
@@ -55,13 +55,13 @@ def main():
     # -------------------- Figures --------------------
     print("Generating figures...")
 
-    # Figure 1: 3D histogram (original Figure 6)
+    # Figure 1: 3D histogram
     plotting.figure_6_hist3d(
         df_goldbach,
         os.path.join(figures_dir, 'figure_1.pdf')
     )
 
-    # Figure 2: Global fit (original Figure 1)
+    # Figure 2: Global fit (seaborn style)
     L_vals = [1e4, 1e5, 1e6, 1e7, 1e8]
     R_vals = [0.7225, 0.6725, 0.6382, 0.6145, 0.5975]
     plotting.figure_1_global_fit(
@@ -70,20 +70,20 @@ def main():
         os.path.join(figures_dir, 'figure_2.pdf')
     )
 
-    # Figure 3: Local fit (original Figure 2)
+    # Figure 3: Local fit
     plotting.figure_2_local_fit(
         df_sub_30,
         os.path.join(figures_dir, 'figure_3.pdf')
     )
 
-    # Figure 4: Fit with zero term (original Figure 3)
+    # Figure 4: Fit with zero term
     plotting.figure_3_zeros_fit(
         df_sub_30,
         zeros,
         os.path.join(figures_dir, 'figure_4.pdf')
     )
 
-    # Figure 5: Autocorrelation (original Figure 4)
+    # Figure 5: Autocorrelation
     print("Computing 500 subintervals for residual analysis...")
     df_sub_500 = stats.compute_subintervals(df_goldbach, n_intervals=500)
     resid_500 = fits.log_fit_local_residuals(df_sub_500)
@@ -92,7 +92,7 @@ def main():
         os.path.join(figures_dir, 'figure_5.pdf')
     )
 
-    # Figure 6: Q(L) plot (original Figure 5)
+    # Figure 6: Q(L) plot
     plotting.figure_5_Q_plot(
         tilde_stats,
         os.path.join(figures_dir, 'figure_6.pdf')
