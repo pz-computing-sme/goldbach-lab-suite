@@ -5,54 +5,64 @@ All figure generation functions.
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
+from scipy import stats
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib.colors import Normalize
 from matplotlib.ticker import FuncFormatter, MultipleLocator
 from statsmodels.tsa.stattools import acf
-import seaborn as sns
 from . import fits
 
 plt.rcParams['font.size'] = 12
+sns.set_theme(style="whitegrid", palette="muted")
 
 def figure_1_global_fit(L_vals, R_vals, output_path):
     """
-    Figure 1 (original) / Figure 2 (nova ordem): Global R(L) vs 1/log L.
+    Figure 2: Global R(L) vs 1/log L, with free and fixed-intercept fits.
+    Exactly matches the style of the example script.
     """
     L_vals = np.asarray(L_vals)
     R_vals = np.asarray(R_vals)
-    t = 1.0 / np.log(L_vals)
+    x = 1.0 / np.log(L_vals)
     y = R_vals
 
-    a, b, R2, _, _ = fits.log_fit(L_vals, y)
+    # Free linear regression (as in example)
+    slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+    R2_free = r_value**2
 
-    t_matrix = t.reshape(-1, 1)
-    y_fixed = y - 0.5
-    b_fixed, _, _, _ = np.linalg.lstsq(t_matrix, y_fixed, rcond=None)
-    b_fixed = b_fixed[0]
+    # Fit with intercept fixed at 0.5 (as in example)
+    b_fixed = np.mean((y - 0.5) / x)
+    residuals_fixed = y - (0.5 + b_fixed * x)
+    ss_res_fixed = np.sum(residuals_fixed**2)
+    ss_tot = np.sum((y - np.mean(y))**2)
+    r2_fixed = 1 - ss_res_fixed / ss_tot
 
-    fig, ax = plt.subplots(figsize=(8,5))
-    ax.scatter(t, y, color='blue', label='Data')
+    # Plot
+    plt.figure(figsize=(8, 5))
+    sns.scatterplot(x=x, y=y, color='blue', s=80, edgecolor='w', linewidth=0.5, label='Global data', zorder=5)
 
-    t_fit = np.linspace(min(t), max(t), 100)
-    y_fit = a + b * t_fit
-    ax.plot(t_fit, y_fit, 'r-', label=f'Free fit: R = {a:.4f} + {b:.4f}/log L')
+    x_fit = np.linspace(min(x), max(x), 200)
+    y_fit_free = intercept + slope * x_fit
+    plt.plot(x_fit, y_fit_free, 'r-', linewidth=2.5,
+             label=f'Free fit: $R = {intercept:.3f} + {slope:.3f}/\\ln L$')
 
-    y_fixed_fit = 0.5 + b_fixed * t_fit
-    ax.plot(t_fit, y_fixed_fit, 'g--', label=f'Fixed intercept: R = 0.5 + {b_fixed:.4f}/log L')
+    y_fit_fixed = 0.5 + b_fixed * x_fit
+    plt.plot(x_fit, y_fit_fixed, 'g--', linewidth=2,
+             label=f'Fixed intercept: $R = 0.5 + {b_fixed:.3f}/\\ln L$')
 
-    ax.set_xlabel(r'$1/\log L$')
-    ax.set_ylabel(r'$R(L)$')
-    ax.set_title('Global fit of $R(L)$')
-    ax.legend()
-    ax.grid(True, alpha=0.3)
+    plt.xlabel(r'$1/\ln L$', fontsize=14)
+    plt.ylabel(r'$R(L)$', fontsize=14)
+    plt.title('Global fit of cumulative data', fontsize=16, fontweight='bold')
+    plt.legend(fontsize=12, frameon=True, fancybox=True, shadow=True)
+    plt.grid(True, linestyle='--', alpha=0.7)
     plt.tight_layout()
-    plt.savefig(output_path)
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
 
 def figure_2_local_fit(df_sub, output_path):
     """
-    Figure 2 (original) / Figure 3 (nova ordem): Local R(I_k) vs 1/log L_k.
+    Figure 3: Local R(I_k) vs 1/log L_k.
     """
     Lk = df_sub['interval_right'].values
     Rk = df_sub['Rk'].values
@@ -77,57 +87,85 @@ def figure_2_local_fit(df_sub, output_path):
 
 def figure_3_zeros_fit(df_sub, zeros, output_path):
     """
-    Figure 3 (original) / Figure 4 (nova ordem): Comparação entre ajustes.
+    Figure 4: Comparison of logarithmic fit and fit including zero term.
+    Uses seaborn style with smooth curves and metrics box.
     """
     Lk = df_sub['interval_right'].values
     Rk = df_sub['Rk'].values
 
-    a_log, b_log, _, _, _ = fits.log_fit(Lk, Rk)
-    a_zt, b_zt, c_zt, R2_zt, _, F, p = fits.fit_with_zeros(df_sub, zeros)
+    # Fit logarithmic model (free intercept)
+    a_log, b_log, r2_log, _, _ = fits.log_fit(Lk, Rk)
+
+    # Fit full model (with zeros)
+    a_full, b_full, c_full, r2_full, resid_full, F, p_value, _ = fits.fit_with_zeros(df_sub, zeros)
 
     x_plot = 1.0 / np.log(Lk)
+    # Sort for smooth curves
     idx = np.argsort(x_plot)
     x_sorted = x_plot[idx]
+    L_sorted = Lk[idx]
 
-    y_log = a_log + b_log * x_sorted
-    y_zt = a_zt + b_zt * x_sorted + c_zt * np.array([fits.zero_term(L, zeros) for L in Lk[idx]])
+    # Smooth prediction lines
+    x_smooth = np.linspace(min(x_plot), max(x_plot), 200)
+    L_smooth = np.exp(1 / x_smooth)
+    Z_smooth = np.array([fits.zero_term(L, zeros) for L in L_smooth])
 
-    fig, ax = plt.subplots(figsize=(8,5))
-    ax.scatter(x_plot, Rk, color='blue', s=20, label='Data')
-    ax.plot(x_sorted, y_log, 'b-', label='Log fit', linewidth=2)
-    ax.plot(x_sorted, y_zt, 'r-', label='Log + zeros fit', linewidth=2)
-    ax.set_xlabel(r'$1/\log L_k$')
-    ax.set_ylabel(r'$R(I_k)$')
-    ax.set_title('Comparison of fits (30 subintervals)')
-    ax.legend()
-    ax.grid(True, alpha=0.3)
+    y_log_smooth = a_log + b_log * x_smooth
+    y_full_smooth = a_full + b_full * x_smooth + c_full * Z_smooth
+
+    # Metrics for text box
+    resid_log = Rk - (a_log + b_log * x_plot)
+    rmse_log = np.sqrt(np.mean(resid_log**2))
+    rmse_full = np.sqrt(np.mean(resid_full**2))
+    rmse_reduction = (rmse_log - rmse_full) / rmse_log * 100
+
+    plt.figure(figsize=(10, 6))
+    # Observed data
+    sns.scatterplot(x=x_plot, y=Rk, color='black', s=80, label='Observed', zorder=5, edgecolor='white', linewidth=1)
+
+    # Logarithmic model
+    plt.plot(x_smooth, y_log_smooth, 'b-', linewidth=2.5,
+             label=f'Log model: $R = {a_log:.3f} + {b_log:.3f}/\\ln L$')
+
+    # Full model
+    plt.plot(x_smooth, y_full_smooth, 'r-', linewidth=2.5,
+             label=f'Full model: $R = {a_full:.3f} + {b_full:.3f}/\\ln L + {c_full:.3f}Z_{{\\mathrm{{full}}}}$')
+
+    plt.xlabel(r'$1/\ln L$', fontsize=14)
+    plt.ylabel(r'$R(I_k)$', fontsize=14)
+    plt.title('Comparison of models with full zero term', fontsize=16, fontweight='bold')
+    plt.legend(fontsize=11, frameon=True, fancybox=True, shadow=True)
+    plt.grid(True, linestyle='--', alpha=0.5)
+
+    # Text box with metrics
+    textstr = f'$R^2$ (log): {r2_log:.4f}\n$R^2$ (full): {r2_full:.4f}\nRMSE reduction: {rmse_reduction:.1f}%'
+    props = dict(boxstyle='round', facecolor='wheat', alpha=0.65)
+    plt.text(0.04, 0.75, textstr, transform=plt.gca().transAxes, fontsize=11,
+             verticalalignment='top', bbox=props)
+
     plt.tight_layout()
-    plt.savefig(output_path)
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
 
 def figure_4_autocorr(residuals, output_path):
     """
-    Figure 4 (original) / Figure 5 (nova ordem): Autocorrelation of residuals.
-    Uses stem plot to match article style.
+    Figure 5: Autocorrelation of residuals (stem plot).
     """
     residuals = np.asarray(residuals)
     residuals = residuals[~np.isnan(residuals)]
     n = len(residuals)
     print(f"Number of residuals for autocorrelation: {n} (expected 500)")
 
-    # Center
     residuals = residuals - np.mean(residuals)
 
     lag_max = 50
     acf_vals = acf(residuals, nlags=lag_max, fft=True)
     lags = np.arange(len(acf_vals))  # includes lag 0
 
-    # 95% confidence band
     conf = 1.96 / np.sqrt(n)
     print(f"Confidence band: {conf:.4f}")
 
     fig, ax = plt.subplots(figsize=(10,5))
-    # Use stem plot for discrete lags
     markerline, stemlines, baseline = ax.stem(
         lags[1:], acf_vals[1:], basefmt=" ", markerfmt='o', linefmt='steelblue')
     plt.setp(markerline, markersize=4, color='steelblue')
@@ -148,17 +186,13 @@ def figure_4_autocorr(residuals, output_path):
 
 def figure_5_Q_plot(tilde_stats, output_path):
     """
-    Figure 5 (original) / Figure 6 (nova ordem): Q(L) = L * var(tildeR) / log^2 L.
-    Plots Q(L) vs L with log scale on x-axis, using seaborn styling.
+    Figure 6: Q(L) = L * var(tildeR) / log^2 L.
     """
-    # Extract L and Q values from tilde_stats
     L_vals = [d['L'] for d in tilde_stats]
     Q_vals = [d['Q'] for d in tilde_stats]
 
-    # Create DataFrame for seaborn
     df_plot = pd.DataFrame({'L': L_vals, 'Q': Q_vals})
 
-    # Set seaborn style and context
     sns.set_style("whitegrid")
     sns.set_context("talk", font_scale=1.2)
 
@@ -176,40 +210,30 @@ def figure_5_Q_plot(tilde_stats, output_path):
 
 def figure_6_hist3d(df, output_path):
     """
-    Figure 6 (original) / Figure 1 (nova ordem): 3D histogram.
-    High-definition version matching article style.
+    Figure 1: 3D histogram exactly matching the vivid script.
     """
+    # 1. Filter even numbers only
     df_even = df[df['n'] % 2 == 0].copy()
-    # Use columns 'n', 'G', 'S' (S is the singular series)
-    n_vals = df_even['n'].values
-    G_vals = df_even['G'].values
-    S_vals = df_even['S'].values
 
-    n_max_val = n_vals.max()
-    g_max_val = G_vals.max()
+    # 2. Binning Logic (30 bins each)
+    n_bins, g_bins = 30, 30
+    n_max_val = df_even['n'].max()
+    g_max_val = df_even['G'].max()
 
-    # Binning
-    n_bins = 30
-    g_bins = 30
+    # Create bins using pd.cut (same as script)
+    df_even['n_bin'] = pd.cut(df_even['n'], bins=n_bins, labels=False)
+    df_even['g_bin'] = pd.cut(df_even['G'], bins=g_bins, labels=False)
 
-    # Create bins
+    # Pivot table for average S (singular series)
+    pivot = df_even.pivot_table(values='S', index='g_bin', columns='n_bin', aggfunc='mean')
+
+    # 3. Coordinate preparation (same as script)
     n_edges = np.linspace(0, n_max_val / 1e6, n_bins + 1)
     g_edges = np.linspace(0, g_max_val, g_bins + 1)
 
-    # Compute 2D histogram with weights = S
-    H, xedges, yedges = np.histogram2d(
-        n_vals / 1e6, G_vals, bins=[n_edges, g_edges], weights=S_vals)
-    counts, _, _ = np.histogram2d(
-        n_vals / 1e6, G_vals, bins=[n_edges, g_edges])
-
-    with np.errstate(divide='ignore', invalid='ignore'):
-        avg_S = np.divide(H, counts)
-        avg_S[counts == 0] = 0
-
-    # Prepare bar positions
     n_centers = (n_edges[:-1] + n_edges[1:]) / 2
     g_centers = (g_edges[:-1] + g_edges[1:]) / 2
-    n_mesh, g_mesh = np.meshgrid(n_centers, g_centers, indexing='ij')
+    n_mesh, g_mesh = np.meshgrid(n_centers, g_centers)
 
     dx = (n_edges[1] - n_edges[0]) * 0.85
     dy = (g_edges[1] - g_edges[0]) * 0.85
@@ -217,26 +241,30 @@ def figure_6_hist3d(df, output_path):
     xpos = n_mesh.flatten()
     ypos = g_mesh.flatten()
     zpos = np.zeros_like(xpos)
-    dz = avg_S.flatten()
+    dz = pivot.values.flatten()
 
-    # Remove NaN bins
+    # Remove NaN bins (no data)
     mask = ~np.isnan(dz)
-    xpos = xpos[mask]
-    ypos = ypos[mask]
-    zpos = zpos[mask]
-    dz = dz[mask]
+    xpos, ypos, zpos, dz = xpos[mask], ypos[mask], zpos[mask], dz[mask]
 
-    # Styling
+    if len(dz) == 0:
+        print("Warning: No data for 3D histogram.")
+        return
+
+    # 4. Styling and Plotting
+    sns.set_style("whitegrid")
+    fig = plt.figure(figsize=(16, 11))
+    ax = fig.add_subplot(111, projection='3d')
+
+    # Color mapping: inferno with vmin shifted (same as script)
     norm = Normalize(vmin=dz.min() - 0.8, vmax=dz.max())
     colors = cm.inferno(norm(dz))
 
-    fig = plt.figure(figsize=(16, 11))
-    ax = fig.add_subplot(111, projection='3d')
     ax.bar3d(xpos, ypos, zpos, dx, dy, dz,
              color=colors, alpha=1.0, shade=True,
              edgecolor='black', linewidth=0.4)
 
-    # Axis formatting
+    # 5. Axis Formatting (exactly as script)
     def x_format(x, pos):
         return "0" if x == 0 else f"{int(x)}M"
 
@@ -258,6 +286,7 @@ def figure_6_hist3d(df, output_path):
     ax.set_ylim(0, g_edges.max())
     ax.set_zlim(0, dz.max() + 0.5)
 
+    # 6. Perspective and Title
     ax.view_init(elev=25, azim=-65)
 
     ax.set_title('3D Histogram: Average Singular Series by n and G(n)\n($4 \\leq n \\leq 10^7$)',
@@ -270,5 +299,5 @@ def figure_6_hist3d(df, output_path):
     cbar.set_label(r'Average $\mathfrak{S}(n)$', fontsize=12)
 
     plt.tight_layout()
-    plt.savefig(output_path)
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
     plt.close()
