@@ -201,7 +201,7 @@ def figure_5_Q_plot(tilde_stats, output_path):
     plt.xscale('log')
     plt.xlabel('L', fontsize=14)
     plt.ylabel(r'$Q(L) = \frac{L \cdot \operatorname{Var}(\tilde{R})}{\log^2 L}$', fontsize=14)
-    plt.title('Mean-square error in the pre-asymptotic regime (Theorem 6.1)', fontsize=16)
+    plt.title('Mean-square error in the pre-asymptotic regime', fontsize=16)
     plt.grid(True, which='both', linestyle='--', alpha=0.6)
     sns.despine()
     plt.tight_layout()
