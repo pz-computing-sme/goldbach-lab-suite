@@ -58,9 +58,9 @@ Prerequisites
 * Python 3.10 or higher.
 * C++ Compiler (GCC, Clang, or MSVC) with C++17 support.
 
-Running the C++ Engine
+Running the C++ RSST
 1. Navigate to the engine directory:
-   cd cpp_engine
+   cd rsst_paper
 2. Compile the source (Optimization flag -O3 recommended):
    g++ -O3 -std=c++17 rsst.cpp -o rsst
 3. Run the analysis:
