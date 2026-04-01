@@ -62,9 +62,9 @@ Running the C++ Engine
 1. Navigate to the engine directory:
    cd cpp_engine
 2. Compile the source (Optimization flag -O3 recommended):
-   g++ -O3 -std=c++17 rsst_engine.cpp -o rsst_engine
+   g++ -O3 -std=c++17 rsst.cpp -o rsst
 3. Run the analysis:
-   ./rsst_engine [limit]
+   ./rsst [limit]
 
 Running the Python Laboratory
 1. Install dependencies:
@@ -93,15 +93,18 @@ This repository contains the code and data used in the paper "On the Goldbach Si
     - `pair_correlation.pdf`: pair correlation of residuals compared to Montgomery's conjecture.
 
 - `src/` – Python modules for loading data, computing statistics, fitting models, and plotting:
+  -' __init__.py'
   - `data_loader.py`
   - `stats.py`
   - `fits.py`
   - `plotting.py`
   - `utils.py`
 
+ - 'rsst.cpp' - C++ script that generates the values ​​from Table 1.
+
 - `analyze_goldbach.py` – Main script that reproduces all tables (except Table 1) and figures from the paper using the dataset.
 
-- `output/` – Generated tables (CSV) and figures (PDF) (created when running the script):
+- `output/` – Generated tables (CSV) and figures (PDF) (created when running the script analyze_goldbach.py):
   - `tables/`: CSV files with computed statistics (Table 3, tilde{R} statistics, etc.).
   - `figures/`: Main figures (Figure 1 to Figure 6) in PDF format.
 
