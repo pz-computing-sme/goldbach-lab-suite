@@ -93,14 +93,14 @@ This repository contains the code and data used in the paper "On the Goldbach Si
     - `pair_correlation.pdf`: pair correlation of residuals compared to Montgomery's conjecture.
 
 - `src/` – Python modules for loading data, computing statistics, fitting models, and plotting:
-  -' __init__.py'
+  - `__init__.py`
   - `data_loader.py`
   - `stats.py`
   - `fits.py`
   - `plotting.py`
   - `utils.py`
 
- - 'rsst.cpp' - C++ script that generates the values ​​from Table 1.
+ - `rsst.cpp` - C++ script that generates the values ​​from Table 1.
 
 - `analyze_goldbach.py` – Main script that reproduces all tables (except Table 1) and figures from the paper using the dataset.
 
