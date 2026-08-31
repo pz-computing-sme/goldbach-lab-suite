@@ -17,6 +17,8 @@ pinned: false
 ![Framework](https://img.shields.io/badge/UI-Streamlit-FF4B4B?logo=streamlit&logoColor=white)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
+---
+
 Install the required Python packages:
 
 ```bash
