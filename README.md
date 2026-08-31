@@ -8,14 +8,9 @@ app_file: live_demo.py
 pinned: false
 ---
 
-
 # 🔬 Goldbach Lab Suite (GHN-Lab)
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19372427.svg)](https://doi.org/10.5281/zenodo.19372427)  
-![Python Version](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)
-![C++ Version](https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B&logoColor=white)
-![Framework](https://img.shields.io/badge/UI-Streamlit-FF4B4B?logo=streamlit&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-green)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19372427.svg)](https://doi.org/10.5281/zenodo.19372427) [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)](https://python.org) [![C++ Version](https://img.shields.io/badge/C%2B%2B-17-00599C?logo=c%2B%2B&logoColor=white)](https://isocpp.org) [![Framework](https://img.shields.io/badge/UI-Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io) [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ---
 
